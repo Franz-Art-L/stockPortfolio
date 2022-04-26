@@ -9,15 +9,39 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Portfolio = function (_React$Component) {
   _inherits(Portfolio, _React$Component);
 
-  function Portfolio(props) {
+  function Portfolio() {
     _classCallCheck(this, Portfolio);
 
-    return _possibleConstructorReturn(this, (Portfolio.__proto__ || Object.getPrototypeOf(Portfolio)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Portfolio.__proto__ || Object.getPrototypeOf(Portfolio)).call(this));
+
+    _this.state = {
+      portfolio: [{
+        name: 'Famebook',
+        shares_owned: 30,
+        cost_per_share: 40,
+        market_price: 24
+      }, {
+        name: "Amazoom",
+        shares_owned: 43,
+        cost_per_share: 32,
+        market_price: 22
+      }, {
+        name: "Spamchat",
+        shares_owned: 11,
+        cost_per_share: 44,
+        market_price: 51
+      }]
+    };
+    // Note: api JSON data often come in underscore_styled like above
+    return _this;
   }
 
   _createClass(Portfolio, [{
     key: "render",
     value: function render() {
+      var portfolio = this.state.portfolio;
+
+
       return React.createElement(
         "div",
         { className: "container" },
@@ -74,7 +98,64 @@ var Portfolio = function (_React$Component) {
                   React.createElement("th", { scope: "col" })
                 )
               ),
-              React.createElement("tbody", null)
+              React.createElement(
+                "tbody",
+                null,
+                portfolio.map(function (stock, idx) {
+                  var name = stock.name,
+                      shares_owned = stock.shares_owned,
+                      cost_per_share = stock.cost_per_share,
+                      market_price = stock.market_price;
+
+
+                  var market_value = shares_owned * market_price;
+                  var unrealized_gain_loss = market_value - shares_owned * cost_per_share;
+
+                  return React.createElement(
+                    "tr",
+                    { key: idx },
+                    React.createElement(
+                      "td",
+                      null,
+                      name
+                    ),
+                    React.createElement(
+                      "td",
+                      null,
+                      React.createElement("input", { type: "number", name: "shares_owned", value: shares_owned })
+                    ),
+                    React.createElement(
+                      "td",
+                      null,
+                      React.createElement("input", { type: "number", name: "cost_per_share", value: cost_per_share })
+                    ),
+                    React.createElement(
+                      "td",
+                      null,
+                      React.createElement("input", { type: "number", name: "Market_price", value: market_price })
+                    ),
+                    React.createElement(
+                      "td",
+                      null,
+                      market_value
+                    ),
+                    React.createElement(
+                      "td",
+                      null,
+                      unrealized_gain_loss
+                    ),
+                    React.createElement(
+                      "td",
+                      null,
+                      React.createElement(
+                        "button",
+                        { className: "btn btn-danger btn-sm" },
+                        "remove"
+                      )
+                    )
+                  );
+                })
+              )
             )
           )
         )
