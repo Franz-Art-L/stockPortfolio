@@ -33,14 +33,49 @@ var Portfolio = function (_React$Component) {
       }]
     };
     // Note: api JSON data often come in underscore_styled like above
+
+    _this.removeStock = _this.removeStock.bind(_this);
+    _this.handleChange = _this.handleChange.bind(_this);
     return _this;
   }
 
   _createClass(Portfolio, [{
+    key: "removeStock",
+    value: function removeStock(idx) {
+      var portfolio = this.state.portfolio.slice(); //shallow copy
+      portfolio.splice(idx, 1);
+
+      this.setState({ portfolio: portfolio });
+    }
+  }, {
+    key: "handleChange",
+    value: function handleChange(event, index) {
+      var portfolio = this.state.portfolio.slice();
+      var _event$target = event.target,
+          name = _event$target.name,
+          value = _event$target.value;
+
+
+      portfolio[index][name] = value;
+      this.setState({ portfolio: portfolio });
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       var portfolio = this.state.portfolio;
 
+
+      var portfolio_Market_Value = portfolio.reduce(function (sum, stock) {
+        return stock.shares_owned * stock.market_price + sum;
+      }, 0);
+
+      var stocks_Cost_Of_Purchase = portfolio.reduce(function (sum, stock) {
+        return stock.shares_owned * stock.cost_per_share + sum;
+      }, 0);
+
+      var unrealized_Gain_Loss = portfolio_Market_Value - stocks_Cost_Of_Purchase;
 
       return React.createElement(
         "div",
@@ -122,17 +157,23 @@ var Portfolio = function (_React$Component) {
                     React.createElement(
                       "td",
                       null,
-                      React.createElement("input", { type: "number", name: "shares_owned", value: shares_owned })
+                      React.createElement("input", { type: "number", name: "shares_owned", value: shares_owned, onChange: function onChange(e) {
+                          return _this2.handleChange(e, idx);
+                        } })
                     ),
                     React.createElement(
                       "td",
                       null,
-                      React.createElement("input", { type: "number", name: "cost_per_share", value: cost_per_share })
+                      React.createElement("input", { type: "number", name: "cost_per_share", value: cost_per_share, onChange: function onChange(e) {
+                          return _this2.handleChange(e, idx);
+                        } })
                     ),
                     React.createElement(
                       "td",
                       null,
-                      React.createElement("input", { type: "number", name: "Market_price", value: market_price })
+                      React.createElement("input", { type: "number", name: "market_price", value: market_price, onChange: function onChange(e) {
+                          return _this2.handleChange(e, idx);
+                        } })
                     ),
                     React.createElement(
                       "td",
@@ -149,13 +190,35 @@ var Portfolio = function (_React$Component) {
                       null,
                       React.createElement(
                         "button",
-                        { className: "btn btn-danger btn-sm" },
+                        { className: "btn btn-danger btn-sm", onClick: function onClick() {
+                            return _this2.removeStock(idx);
+                          } },
                         "remove"
                       )
                     )
                   );
                 })
               )
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "col-12 col-md-6" },
+            React.createElement(
+              "h4",
+              { className: "mb-3" },
+              "Portfolio: $ ",
+              portfolio_Market_Value
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "col-12 col-md-6" },
+            React.createElement(
+              "h4",
+              { className: "mb-3" },
+              "Unrealized Gain/Loss: $ ",
+              unrealized_Gain_Loss
             )
           )
         )

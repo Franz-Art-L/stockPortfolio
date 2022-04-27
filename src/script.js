@@ -25,10 +25,34 @@ class Portfolio extends React.Component {
       ]
     };
       // Note: api JSON data often come in underscore_styled like above
+
+    this.removeStock = this.removeStock.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
+  removeStock(idx) {
+    const portfolio = this.state.portfolio.slice(); //shallow copy
+    portfolio.splice(idx, 1);
+
+    this.setState({ portfolio });
+  };
+
+  handleChange(event, index) {
+    const portfolio = this.state.portfolio.slice();
+    const {name, value} = event.target;
+
+    portfolio[index][name] = value;
+    this.setState({ portfolio });
+  };
+  
   render() {
     const { portfolio } = this.state;
+
+    const portfolio_Market_Value = portfolio.reduce((sum, stock) => stock.shares_owned * stock.market_price + sum, 0);
+    
+    const stocks_Cost_Of_Purchase = portfolio.reduce((sum, stock) => stock.shares_owned * stock.cost_per_share + sum, 0);
+
+    const unrealized_Gain_Loss = portfolio_Market_Value - stocks_Cost_Of_Purchase;
 
     return(
       <div className="container">
@@ -50,6 +74,7 @@ class Portfolio extends React.Component {
                 </thead>
                 
                 <tbody>
+
                   {portfolio.map((stock, idx) => {
                     const { name, shares_owned, cost_per_share, market_price } = stock;
 
@@ -59,21 +84,26 @@ class Portfolio extends React.Component {
                     return(
                       <tr key={idx}>
                         <td>{name}</td>
-                        <td><input type="number" name="shares_owned" value={shares_owned}/></td>
-                        <td><input type="number" name="cost_per_share" value={cost_per_share}/></td>
-                        <td><input type="number" name="Market_price" value={market_price}/></td>
+                        <td><input type="number" name="shares_owned" value={shares_owned} onChange={e => this.handleChange(e, idx)}/></td>
+                        <td><input type="number" name="cost_per_share" value={cost_per_share} onChange={e => this.handleChange(e, idx)}/></td>
+                        <td><input type="number" name="market_price" value={market_price} onChange={e => this.handleChange(e, idx)}/></td>
                         <td>{market_value}</td>
                         <td>{unrealized_gain_loss}</td>
-                        <td><button className="btn btn-danger btn-sm">remove</button></td>
+                        <td><button className="btn btn-danger btn-sm" onClick={() => this.removeStock(idx)}>remove</button></td>
                       </tr>  
                     )
                   })}
                 </tbody>
-
               </table>
             </div>
+                  <div className="col-12 col-md-6">
+                    <h4 className="mb-3">Portfolio: $ {portfolio_Market_Value}</h4>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <h4 className="mb-3">Unrealized Gain/Loss: $ {unrealized_Gain_Loss}</h4>
+                  </div>
           </div>
-      </div>
+        </div>
     );
   }
 }
