@@ -1,0 +1,12 @@
+body {
+    background-image: url(images/trading3.jpeg);
+}
+
+.container {
+    background-image: url(images/trading4.jpeg);
+    border-radius: 10px;
+}
+
+.portfolio-GainLoss {
+    color: white;
+}

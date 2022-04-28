@@ -15,6 +15,7 @@ var Portfolio = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Portfolio.__proto__ || Object.getPrototypeOf(Portfolio)).call(this));
 
     _this.state = {
+
       portfolio: [{
         name: 'Famebook',
         shares_owned: 30,
@@ -30,12 +31,24 @@ var Portfolio = function (_React$Component) {
         shares_owned: 11,
         cost_per_share: 44,
         market_price: 51
-      }]
+      }],
+
+      form: {
+        name: "",
+        shares_owned: 0,
+        cost_per_share: 0,
+        market_price: 0
+      }
+
     };
     // Note: api JSON data often come in underscore_styled like above
 
     _this.removeStock = _this.removeStock.bind(_this);
     _this.handleChange = _this.handleChange.bind(_this);
+
+    _this.formHandleChange = _this.formHandleChange.bind(_this);
+    _this.addStock = _this.addStock.bind(_this);
+
     return _this;
   }
 
@@ -60,11 +73,43 @@ var Portfolio = function (_React$Component) {
       this.setState({ portfolio: portfolio });
     }
   }, {
+    key: "formHandleChange",
+    value: function formHandleChange(event) {
+      var _event$target2 = event.target,
+          name = _event$target2.name,
+          value = _event$target2.value;
+      var form = this.state.form;
+
+
+      form[name] = value;
+      this.setState({ form: form });
+    }
+  }, {
+    key: "addStock",
+    value: function addStock(event) {
+      event.preventDefault();
+      var portfolio = this.state.portfolio.slice();
+
+      portfolio.push(this.state.form);
+
+      this.setState({
+        portfolio: portfolio,
+        form: {
+          name: "",
+          shares_owned: 0,
+          cost_per_share: 0,
+          market_price: 0
+        }
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this2 = this;
 
-      var portfolio = this.state.portfolio;
+      var _state = this.state,
+          portfolio = _state.portfolio,
+          form = _state.form;
 
 
       var portfolio_Market_Value = portfolio.reduce(function (sum, stock) {
@@ -177,12 +222,12 @@ var Portfolio = function (_React$Component) {
                     ),
                     React.createElement(
                       "td",
-                      null,
+                      { style: { color: "white" } },
                       market_value
                     ),
                     React.createElement(
                       "td",
-                      null,
+                      { style: { color: "white" } },
                       unrealized_gain_loss
                     ),
                     React.createElement(
@@ -202,8 +247,21 @@ var Portfolio = function (_React$Component) {
             )
           ),
           React.createElement(
+            "form",
+            { className: "col-12 mt-2 mb-4", onSubmit: this.addStock },
+            React.createElement("input", { className: "mx-2", type: "text", name: "name", value: form.name, placeholder: "NAME", onChange: this.formHandleChange }),
+            React.createElement("input", { className: "mx-2", type: "number", name: "shares_owned", value: form.shares_owned, placeholder: "SHARES", onChange: this.formHandleChange }),
+            React.createElement("input", { className: "mx-2", type: "number", name: "cost_per_share", value: form.cost_per_share, placeholder: "COST", onChange: this.formHandleChange }),
+            React.createElement("input", { className: "mx-2", type: "number", name: "market_price", value: form.market_price, placeholder: "PRICE", onChange: this.formHandleChange }),
+            React.createElement(
+              "button",
+              { className: "btn btn-primary btn-sm" },
+              "ADD"
+            )
+          ),
+          React.createElement(
             "div",
-            { className: "col-12 col-md-6" },
+            { className: "portfolio-GainLoss col-12 col-md-6" },
             React.createElement(
               "h4",
               { className: "mb-3" },
@@ -213,7 +271,7 @@ var Portfolio = function (_React$Component) {
           ),
           React.createElement(
             "div",
-            { className: "col-12 col-md-6" },
+            { className: "portfolio-GainLoss col-12 col-md-6" },
             React.createElement(
               "h4",
               { className: "mb-3" },
@@ -229,4 +287,29 @@ var Portfolio = function (_React$Component) {
   return Portfolio;
 }(React.Component);
 
+var Footer = function Footer() {
+  return React.createElement(
+    "div",
+    { className: "py-2 my-4 text-center", style: { color: 'white' } },
+    React.createElement(
+      "span",
+      null,
+      "ReactJs practice by:"
+    ),
+    React.createElement(
+      "p",
+      null,
+      React.createElement(
+        "a",
+        { href: "https://confident-murdock-8e5bba.netlify.app/", target: "_blank", rel: "noopener noreferrer" },
+        "Francis Artemio Landia"
+      ),
+      React.createElement("br", null),
+      "2022"
+    )
+  );
+};
+
 ReactDOM.render(React.createElement(Portfolio, null), document.getElementById('root'));
+
+ReactDOM.render(React.createElement(Footer, null), document.getElementById('footer'));
